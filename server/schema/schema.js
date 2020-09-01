@@ -15,7 +15,7 @@ const BookType = new GraphQLObjectType({
 })
 
 //dummy data
-const books = [
+let books = [
 
     {
         name:'The Jungle Book',
@@ -43,7 +43,7 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args){
                 args.id
                 //querying the data from the database / other sources
-               return _.find(books, {id:args.id})
+               return_.find(books, {id:args.id})
             }
         }
     }
