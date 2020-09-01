@@ -43,12 +43,12 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args){
                 args.id
                 //querying the data from the database / other sources
-               return_.find(books, {id:args.id})
+               return _.find(books, {id:args.id})
             }
         }
     }
 })
 
-module.export = new GraphQLSchema({
+module.exports = new GraphQLSchema({
     query: RootQuery
 })

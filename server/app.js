@@ -10,7 +10,7 @@ const app = express();
 
 app.use('/graphql', graphqlHTTP({
     schema,
-    graphiql: true
+    graphiql: true //this allows us to use the graphiql client
 }));
 
 
