@@ -11,7 +11,7 @@ const {graphqlHTTP} = require('express-graphql');
 const app = express()
 
 //connecting to the database
-mongoose.connect('mongodb+srv://Adarshgql:'+process.env.MONGO_PW+'@cluster0.vamuk.mongodb.net/<dbname>?retryWrites=true&w=majority', {
+mongoose.connect('{mongoDB_connection_string}', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
