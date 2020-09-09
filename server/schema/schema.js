@@ -1,6 +1,6 @@
 const graphql = require('graphql')
 const _ = require('lodash')
-const {GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList} = graphql
+const {GraphQLObjectType, GraphQLNonNull , GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList} = graphql
 
 //model imports
 const Book = require('../models/book')
@@ -105,8 +105,8 @@ const Mutation = new GraphQLObjectType({
         addAuthor:{
             type: AuthorType,
             args: {
-                name: {type: GraphQLString},
-                age: {type: GraphQLInt}
+                name: {type: new GraphQLNonNull(GraphQLString)},
+                age: {type: new GraphQLNonNull(GraphQLInt)}
             },
             resolve(parent, args){
                 let author = new Author({  //model
@@ -123,9 +123,9 @@ const Mutation = new GraphQLObjectType({
         addBook: {
             type: BookType,
             args: {
-                name: {type:GraphQLString},
-                genre: {type: GraphQLString},
-                authId: {type: GraphQLID}
+                name: {type:new GraphQLNonNull(GraphQLString)},
+                genre: {type: new GraphQLNonNull(GraphQLString)},
+                authId: {type: new GraphQLNonNull(GraphQLID)}
             },
             resolve(parent, args){
                 let book = new Book({
