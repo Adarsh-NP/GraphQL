@@ -7,10 +7,9 @@ const Book = require('../models/book')
 const Author = require('../models/author')
 
 
+
+
 //designing the schema
-
-
-
 //dummy data
 // let books = [
 
@@ -95,6 +94,51 @@ const AuthorType = new GraphQLObjectType({
     })
 })
 
+//making mutations
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor:{
+            type: AuthorType,
+            args: {
+                name: {type: GraphQLString},
+                age: {type: GraphQLInt}
+            },
+            resolve(parent, args){
+                let author = new Author({  //model
+                    name: args.name,
+                    age: args.age
+                })
+                return author.save()
+                .then(console.log('entry added '))
+                .catch(err=>{
+                    console.log('error saving the data');
+                })
+            }
+        },
+        addBook: {
+            type: BookType,
+            args: {
+                name: {type:GraphQLString},
+                genre: {type: GraphQLString},
+                authId: {type: GraphQLID}
+            },
+            resolve(parent, args){
+                let book = new Book({
+                    name: args.name,
+                    genre: args.genre,
+                    authId: args.authId
+                })
+                return book.save()
+                .then('entry added ')
+                .catch(err=> console.log(err))
+                
+            }
+        }
+
+    }
+})
+
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
@@ -132,5 +176,6 @@ const RootQuery = new GraphQLObjectType({
 })
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 })
