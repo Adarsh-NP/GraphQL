@@ -5,6 +5,7 @@ const {GraphQLObjectType, GraphQLNonNull , GraphQLString, GraphQLSchema, GraphQL
 //model imports
 const Book = require('../models/book')
 const Author = require('../models/author')
+const { find } = require('../models/book')
 
 
 
@@ -67,14 +68,16 @@ const BookType = new GraphQLObjectType({
     name: "Book",
     fields: () => ({
         id: {type: GraphQLID},
-        name: {type: GraphQLString},
+        title: {type: GraphQLString},
         genre: {type: GraphQLString},
-        authId: {type: GraphQLID},
+        authorName: {type: GraphQLString},
         author: {
-            type: AuthorType,
+            type: new GraphQLList(AuthorType),
             resolve(parent, args){
                 //return _.find(authors, {id:parent.authId})
-                return Author.findById(parent.authId)
+                return Author.find({
+                    name: parent.authorName
+                })
             }
         }
     })
@@ -87,18 +90,18 @@ const AuthorType = new GraphQLObjectType({
         name: {type: GraphQLString},
         age: {type: GraphQLInt},
         book: {
-            type: new GraphQLList(BookType),
+            type: new GraphQLList(BookType), //not just BookType because each author can have a list of books
             resolve(parent, args){
                 //return _.filter(books, {authId:parent.id})
                 return Book.find({
-                    authId: parent.id
+                    authorName: parent.name
                 })
             }
         }
     })
 })
 
-//making mutations
+//making mutations, these allow us the adding and deletion of the data in the database
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
@@ -123,15 +126,15 @@ const Mutation = new GraphQLObjectType({
         addBook: {
             type: BookType,
             args: {
-                name: {type:new GraphQLNonNull(GraphQLString)},
+                title: {type:new GraphQLNonNull(GraphQLString)},
                 genre: {type: new GraphQLNonNull(GraphQLString)},
-                authId: {type: new GraphQLNonNull(GraphQLID)}
+                authorName: {type: new GraphQLNonNull(GraphQLString)}
             },
             resolve(parent, args){
                 let book = new Book({
-                    name: args.name,
+                    title: args.title,
                     genre: args.genre,
-                    authId: args.authId
+                    authorName: args.authorName
                 })
                 return book.save()
                 .then('entry added ')
@@ -148,21 +151,21 @@ const RootQuery = new GraphQLObjectType({
     fields: {
         book: {
             type: BookType,
-            args: {id: {type: GraphQLID}},
+            args: {title: {type: GraphQLString}},
             resolve(parent, args){
                 //querying the data from the database / other sources
                //return _.find(books, {id:args.id})
-              return Book.findById(args.id)
+              return Book.find(args.name)
             }
         },
         author: {
             type: AuthorType,
-            args: {id: {type: GraphQLID}},
+            args: {name: {type: GraphQLString}},
             resolve(parent, args){
-                args.id
+                args.name
                 //querying the data from the database / other sources
                //return _.find(authors, {id:args.id})
-              return Author.findById(args.id)
+              return Author.find(args.name)
             }
         },
         books: {
