@@ -6,16 +6,18 @@ import {ApolloClient, gql, ApolloProvider, InMemoryCache} from '@apollo/client'
 
 const client = new ApolloClient({
   url: 'http://localhost:2000/graphql',
-  cache: new InMemoryCache
+  cache: new InMemoryCache()
 })
 
 client
   .query({
     query: gql`
-      query books{
+    {
+       books{
         name
         genre
       }
+    }
     `
   })
   .then(res => console.log(res))
@@ -25,7 +27,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <div className="App">
-        <BookList />
+        {/* <BookList /> */}
       </div>
     </ApolloProvider>
   );

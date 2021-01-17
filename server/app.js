@@ -2,13 +2,15 @@
 const express = require('express');
 const schema = require('./schema/schema')
 const mongoose  = require('mongoose')
+const morgan = require('morgan')
+
 //importing express graphql package
 const {graphqlHTTP} = require('express-graphql');
 //Enclosing in curly braces works and its destructured to const graphqlHTTP = require('express-graphql').graphqlHTTP; 
 
-
 //initializing application
 const app = express()
+app.use(morgan('dev'))
 
 //connecting to the database
 mongoose.connect('mongodb+srv://Adarshgql:'+process.env.MONGO_PW+'@cluster0.vamuk.mongodb.net/<dbname>?retryWrites=true&w=majority', {
